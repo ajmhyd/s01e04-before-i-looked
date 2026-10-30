@@ -34,11 +34,11 @@ jobs:
 
       - name: Save digest page
         env:
-          LANE_MARKER: ${{ secrets.LANE_MARKER }}
           LANE_ID: lane-07
           PORT: 8787
         run: |
           set -euo pipefail
+          unset LANE_MARKER
           pnpm start &
           pid=$!
           ready=0
@@ -53,6 +53,7 @@ jobs:
           mkdir -p site
           curl -sf http://127.0.0.1:8787/digest/2026-10-28 -o site/index.html
           grep -q 'digest 2026-10-28' site/index.html
+          grep -q 'no marker set' site/index.html
           kill "$pid" || true
 
       - name: Setup Pages
